@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static com.bjss.shopping.goods.ItemFactory.addItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static  com.bjss.shopping.goods.ItemFactory.addItem;
 
 
 public class PriceBasketTest {
@@ -23,104 +23,79 @@ public class PriceBasketTest {
     @Test
     public void GIVEN__OneBread__THEN__SubTotal_80p() {
 
-
-        priceBasket.addItem(addItem("Bread"));
+        addItemInBasket("Bread");
         assertEquals(new BigDecimal("0.80"), priceBasket.getSubTotal());
     }
+
 
     @Test
     public void GIVEN__2Bread__THEN__SubTotal_1pound60p() {
 
-        priceBasket.addItem(addItem("Bread"));
-        priceBasket.addItem(addItem("Bread"));
+        addItemInBasket("Bread", "Bread");
         assertEquals(new BigDecimal("1.60"), priceBasket.getSubTotal());
-
     }
 
     @Test
     public void GIVEN__1Bread_AND_1Milk__THEN__SubTotal__2pound10p() {
-        priceBasket.addItem(addItem("Bread"));
-        priceBasket.addItem(addItem("Milk"));
+
+        addItemInBasket("Bread", "Milk");
         assertEquals(new BigDecimal("2.10"), priceBasket.getSubTotal());
     }
 
     @Test
     public void GIVEN__1Bread_1Soup_1Milk_1Apples__THEN__Subtotal() {
-        priceBasket.addItem(addItem("Bread"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Milk"));
-        priceBasket.addItem(addItem("Apple"));
+
+        addItemInBasket("Bread", "Soup", "Milk", "Apple");
         assertEquals(new BigDecimal("3.75"), priceBasket.getSubTotal());
     }
 
     @Test
     public void GIVEN__1Apples__THEN__DiscountedPrice_0pound90pence() {
-        priceBasket.addItem(addItem("Apple"));
+
+        addItemInBasket("Apple");
         assertEquals(new BigDecimal("0.90"), priceBasket.getTotal());
     }
 
     @Test
     public void GIVEN__2Apples__THEN__DiscountedTotal_1pound80p() {
-        priceBasket.addItem(addItem("Apple"));
-        priceBasket.addItem(addItem("Apple"));
+
+        addItemInBasket("Apple", "Apple");
         assertEquals(new BigDecimal("1.80"), priceBasket.getTotal());
     }
 
     @Test
     public void GIVEN__2Soups_1Bread__THEN__DiscountedTotal_1pound70pence() {
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Bread"));
+
+        addItemInBasket("Soup", "Soup", "Bread");
         assertEquals(new BigDecimal("1.70"), priceBasket.getTotal());
     }
 
     @Test
     public void GIVEN__5Soups_2Bread__THEN__DiscountedTotal_4pound5p() {
 
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Bread"));
-        priceBasket.addItem(addItem("Bread"));
-
+        addItemInBasket("Soup", "Soup", "Soup", "Bread", "Soup", "Soup", "Bread");
         assertEquals(new BigDecimal("4.05"), priceBasket.getTotal());
-    }
-
-    @Test
-    public void GIVEN__5soups_1Bread__THEN__DiscountedTotal__3pounds65p(){
-
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Bread"));
-
-        assertEquals(new BigDecimal("3.65"), priceBasket.getTotal());
     }
 
     @Test
     public void GIVEN__1Apple__2Soup_1Bread__THEN_DiscountedTotal__2pound60p() {
 
-        priceBasket.addItem(addItem("Apple"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Soup"));
-        priceBasket.addItem(addItem("Bread"));
-
+        addItemInBasket("Apple", "Soup", "Soup", "Bread");
         assertEquals(new BigDecimal("2.60"), priceBasket.getTotal());
     }
 
     @Test
     public void GIVE__1Apple_1Milk_1Bread__THEN__SubTotal_3pounds10__DiscountedTotal_3pounds() {
 
-        priceBasket.addItem(addItem("Apple"));
-        priceBasket.addItem(addItem("Milk"));
-        priceBasket.addItem(addItem("Bread"));
-
+        addItemInBasket("Apple", "Milk", "Bread");
         assertEquals(new BigDecimal("3.00"), priceBasket.getTotal());
         assertEquals(new BigDecimal("3.10"), priceBasket.getSubTotal());
 
+    }
+
+    private void addItemInBasket(String... itemNames) {
+        for (String itemName : itemNames) {
+            priceBasket.addItem(addItem(itemName));
+        }
     }
 }

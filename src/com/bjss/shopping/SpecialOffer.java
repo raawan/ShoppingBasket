@@ -7,13 +7,13 @@ import java.math.RoundingMode;
 
 public class SpecialOffer {
 
-    private PriceBasket basket;
+    private final PriceBasket basket;
 
     SpecialOffer(PriceBasket basket) {
         this.basket = basket;
     }
 
-    public BigDecimal getTotal() {
+    public BigDecimal getTotalAfterOffers() {
 
         BigDecimal discountedApplePrice = applyAppleSpecialOffer();
         BigDecimal discountedBreadPrice = applySoupAndBreadSpecialOffer();
@@ -43,11 +43,10 @@ public class SpecialOffer {
         long countSoup = getItemCount("Soup");
         long countBread = getItemCount("Bread");
         BigDecimal totalBread = getBreadTotal();
-        BigDecimal discountedBreadPrice;
         if (countSoup >= 2 && countBread >= 1) {
             long totaldiscountToApply = countSoup / 2;
             totaldiscountToApply = totaldiscountToApply == 1 ? 2 : totaldiscountToApply;
-            discountedBreadPrice = totalBread.divide(new BigDecimal(totaldiscountToApply));
+            BigDecimal discountedBreadPrice = totalBread.divide(new BigDecimal(totaldiscountToApply));
             return discountedBreadPrice;
         }
         return totalBread;

@@ -5,6 +5,7 @@ import com.bjss.shopping.goods.Item;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PriceBasket {
@@ -15,11 +16,13 @@ public class PriceBasket {
         return items;
     }
 
-    public <T extends Item> void addItem(T item) {
+    public <T extends Item> void addItem(T... basketItems) {
         if (items == null) {
             items = new ArrayList<>();
         }
-        items.add(item);
+        for(T item : basketItems) {
+            items.add(item);
+        }
     }
 
     public BigDecimal getSubTotal() {
@@ -32,7 +35,7 @@ public class PriceBasket {
 
     public BigDecimal getTotal() {
 
-        return new SpecialOffer(this).getTotal();
+        return new SpecialOffer(this).getTotalAfterOffers();
     }
 
 }
