@@ -2,7 +2,7 @@ package com.bjss.shopping.goods;
 
 import java.math.BigDecimal;
 
-public abstract class Item {
+public class Item {
 
     private String name;
     private BigDecimal price;
@@ -11,4 +11,14 @@ public abstract class Item {
         this.name=name;
         this.price=price;
     }
+
+    public String getName() {
+        return name;
+    }
+
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
 }
