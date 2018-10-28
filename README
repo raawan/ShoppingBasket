@@ -1,0 +1,12 @@
+Assumptions:
+
+1) If user want multiple same items, he will provide it as a separate input.
+ ex: if user wants to input 2 apple bags
+ root# PriceBasket Apple Apple
+
+2) The format of the output where discount applies is in the form -x.xx in case where discounts involve pound values not just cents
+ex: Bread 50% off:-1.60 p
+
+
+INFORMATION:
+pricebasket is the main class

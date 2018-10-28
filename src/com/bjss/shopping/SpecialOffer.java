@@ -9,6 +9,7 @@ import java.util.List;
 
 public class SpecialOffer {
 
+    private static final String APPLE_DISCOUNT = "0.90";
     private final PriceBasket basket;
 
     private final List<String> offerStatements = new ArrayList<>();
@@ -35,7 +36,7 @@ public class SpecialOffer {
     private BigDecimal applyAppleSpecialOffer() {
         BigDecimal discountedPrice = basket.getItems().stream()
                 .filter(item -> ((Item) item).getName().equalsIgnoreCase("Apple"))
-                .map(item -> ((Item) item).getPrice().multiply(new BigDecimal("0.90")))
+                .map(item -> ((Item) item).getPrice().multiply(new BigDecimal(APPLE_DISCOUNT)))
                 .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
 
         if (!(discountedPrice.compareTo(new BigDecimal("0")) == 0)) {
