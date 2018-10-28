@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import static com.bjss.shopping.goods.ItemFactory.addItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class PriceBasketTest {
@@ -95,6 +96,12 @@ public class PriceBasketTest {
         assertEquals(new BigDecimal("3.10"), priceBasket.getSubTotal());
 
     }
+
+    @Test()
+    public void GIVEN__invalidItem__THEN__Exception_throw() {
+        assertThrows(RuntimeException.class, () -> addItemInBasket("XXYYZ"));
+    }
+
 
     private void addItemInBasket(String... itemNames) {
         for (String itemName : itemNames) {
