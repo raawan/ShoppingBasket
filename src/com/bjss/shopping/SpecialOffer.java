@@ -38,8 +38,8 @@ public class SpecialOffer {
                 .map(item -> ((Item) item).getPrice().multiply(new BigDecimal("0.90")))
                 .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
 
-        if(!(discountedPrice.compareTo(new BigDecimal("0"))==0)) {
-            addOfferStatement(getItemTotal("Apple"),discountedPrice,"10","Apple");
+        if (!(discountedPrice.compareTo(new BigDecimal("0")) == 0)) {
+            addOfferStatement(getItemTotal("Apple"), discountedPrice, "10", "Apple");
         }
 
         return discountedPrice;
@@ -61,7 +61,7 @@ public class SpecialOffer {
             long totaldiscountToApply = countSoup / 2;
             totaldiscountToApply = totaldiscountToApply == 1 ? 2 : totaldiscountToApply;
             BigDecimal discountedBreadPrice = totalBread.divide(new BigDecimal(totaldiscountToApply));
-            addOfferStatement(totalBread,discountedBreadPrice,"50","Bread");
+            addOfferStatement(totalBread, discountedBreadPrice, "50", "Bread");
             return discountedBreadPrice;
         }
         return totalBread;
@@ -69,10 +69,8 @@ public class SpecialOffer {
 
     private void addOfferStatement(BigDecimal totalPrice, BigDecimal discountedPrice, String percentageOff, String itemName) {
 
-
         BigDecimal totalDiscount = totalPrice.subtract(discountedPrice).setScale(2, RoundingMode.HALF_UP);
-
-        StringBuffer offerStatement = new StringBuffer(itemName).append(" "+percentageOff+"%").append(" off:-").append(totalDiscount.toString()).append(" p");
+        StringBuffer offerStatement = new StringBuffer(itemName).append(" " + percentageOff + "%").append(" off:-").append(totalDiscount.toString()).append(" p");
         offerStatements.add(offerStatement.toString());
     }
 

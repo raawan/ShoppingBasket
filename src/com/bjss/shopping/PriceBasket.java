@@ -5,7 +5,6 @@ import com.bjss.shopping.goods.Item;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PriceBasket {
@@ -24,7 +23,7 @@ public class PriceBasket {
         if (items == null) {
             items = new ArrayList<>();
         }
-        for(T item : basketItems) {
+        for (T item : basketItems) {
             items.add(item);
         }
     }
@@ -46,13 +45,18 @@ public class PriceBasket {
         SpecialOffer specialOffer = new SpecialOffer(this);
         BigDecimal totalAfterOffers = specialOffer.getTotalAfterOffers();
         System.out.println(SUBTOTAL + ":" + " " + "£" + getSubTotal().toString());
-        if(specialOffer.getOfferStatements().size()==0) {
+        printOffers(specialOffer);
+        System.out.println(TOTAL + ":" + " " + "£" + totalAfterOffers.toString());
+    }
+
+    private void printOffers(SpecialOffer specialOffer) {
+        if (specialOffer.getOfferStatements().size() == 0) {
             System.out.println(NO_OFFERS);
+        } else {
+            for (String stmt : specialOffer.getOfferStatements()) {
+                System.out.println(stmt);
+            }
         }
-        for(String stmt : specialOffer.getOfferStatements()) {
-            System.out.println(stmt);
-        }
-        System.out.println(TOTAL+":"+" "+"£"+totalAfterOffers.toString());
     }
 
 }
