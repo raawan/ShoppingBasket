@@ -1,11 +1,14 @@
 package com.bjss.shopping;
 
 import com.bjss.shopping.goods.Item;
+import com.bjss.shopping.goods.promotion.Discount;
+import com.bjss.shopping.goods.promotion.WeeklyDiscounts;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpecialOffer {
 
@@ -22,6 +25,79 @@ public class SpecialOffer {
         this.basket = basket;
     }
 
+    public BigDecimal getTotalAfterOffers_2() {
+        List<Discount> allDiscounts = WeeklyDiscounts.getAllDiscounts();
+
+        List<Discount> itemsWithIndependentDiscount = allDiscounts.stream().filter(discount -> !discount.getDependentItem().isPresent()).collect(Collectors.toList());
+        BigDecimal sumOfIndependentSpecialOffers = new BigDecimal("0");
+        for (Discount discount : itemsWithIndependentDiscount) {
+            sumOfIndependentSpecialOffers = sumOfIndependentSpecialOffers.add(applyIndependentSpecialOffer(discount));
+        }
+
+        BigDecimal sumOfDependentSpecialOffers = new BigDecimal("0");
+        List<Discount> itemsWithDependentDiscount = allDiscounts.stream().filter(discount -> discount.getDependentItem().isPresent()).collect(Collectors.toList());
+        for (Discount discount : itemsWithDependentDiscount) {
+            sumOfDependentSpecialOffers = sumOfDependentSpecialOffers.add(applyDependentSpecialOffer(discount));
+        }
+
+        BigDecimal allNonSPecialOfferItemTotalPrice = getTotalExcludingSpecialOfferItem_2(itemsWithIndependentDiscount,itemsWithDependentDiscount);
+
+        return allNonSPecialOfferItemTotalPrice.add(sumOfIndependentSpecialOffers).add(sumOfDependentSpecialOffers).setScale(2, RoundingMode.HALF_UP);
+
+    }
+
+    private BigDecimal getTotalExcludingSpecialOfferItem_2( List<Discount> itemsWithIndependentDiscount, List<Discount> itemsWithDependentDiscount) {
+        return basket.getItems().stream()
+                .filter(
+                        item -> !this.containInList(itemsWithIndependentDiscount,((Item) item))
+                )
+                .filter(
+                        item -> !this.containInList(itemsWithDependentDiscount,((Item) item))
+                )
+                .map(item -> ((Item) item).getPrice())
+                .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
+    }
+
+    private boolean containInList(List<Discount> discountedItems, Item item) {
+        List<Discount> items = discountedItems.stream().filter(discount -> discount.getDiscountItem().getName().equalsIgnoreCase(item.getName())).collect(Collectors.toList());
+        if(items.size()>0) {
+            return true;
+        }
+        return false;
+    }
+
+    private BigDecimal applyDependentSpecialOffer(Discount discount) {
+        long countDependentItem = getItemCount(discount.getDependentItem().get().getName());
+        long countItemToBeDiscounted = getItemCount(discount.getDiscountItem().getName());
+        BigDecimal totalItemCost = getItemTotal(discount.getDiscountItem().getName());
+
+        if (countDependentItem >= discount.getCountOfDependentItem() && countItemToBeDiscounted >= 1) {
+            long totaldiscountToApply = countDependentItem / discount.getCountOfDependentItem();
+            totaldiscountToApply = totaldiscountToApply == 1 ? discount.getCountOfDependentItem() : totaldiscountToApply;
+            BigDecimal discountedItemPrice = totalItemCost.divide(new BigDecimal(totaldiscountToApply));
+            addOfferStatement(totalItemCost, discountedItemPrice, String.valueOf(100 - discount.getDiscountPercentage()), discount.getDiscountItem().getName());
+            return discountedItemPrice;
+        }
+        return totalItemCost;
+    }
+
+
+    private BigDecimal applyIndependentSpecialOffer(Discount discount) {
+        BigDecimal discountedPrice = basket.getItems().stream()
+                .filter(item -> ((Item) item).getName().equalsIgnoreCase(discount.getDiscountItem().getName()))
+                .map(item -> ((Item) item).getPrice().multiply(new BigDecimal(discount.getDiscountPercentage()).multiply(new BigDecimal("0.01"))))
+                .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
+
+        if (!(discountedPrice.compareTo(new BigDecimal("0")) == 0)) {
+            addOfferStatement(getItemTotal(discount.getDiscountItem().getName()), discountedPrice, String.valueOf(100 - discount.getDiscountPercentage()), discount.getDiscountItem().getName());
+        }
+
+        return discountedPrice;
+    }
+
+    /*
+    ==================================================================================================================================================
+     */
     public BigDecimal getTotalAfterOffers() {
 
         BigDecimal discountedApplePrice = applyAppleSpecialOffer();

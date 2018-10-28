@@ -16,6 +16,9 @@ public class PriceBasket {
 
     private List<? super Item> items;
 
+    public PriceBasket() {
+    }
+
 
     public static void main(String[] args) {
         if(args.length==0 || args.length==1) {
@@ -58,7 +61,8 @@ public class PriceBasket {
 
     public BigDecimal getTotal() {
 
-        return new SpecialOffer(this).getTotalAfterOffers();
+        //return new SpecialOffer(this).getTotalAfterOffers();
+        return new SpecialOffer(this).getTotalAfterOffers_2();
     }
 
     public void print() {
