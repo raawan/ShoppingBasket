@@ -8,8 +8,8 @@ public class Item {
     private final BigDecimal price;
 
     public Item(String name, BigDecimal price) {
-        this.name=name;
-        this.price=price;
+        this.name = name;
+        this.price = price;
     }
 
     public String getName() {

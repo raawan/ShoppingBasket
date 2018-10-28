@@ -75,6 +75,7 @@ public class PriceBasketTest {
 
         addItemInBasket("Soup", "Soup", "Soup", "Bread", "Soup", "Soup", "Bread");
         assertEquals(new BigDecimal("4.05"), priceBasket.getTotal());
+        priceBasket.print();
     }
 
     @Test
@@ -82,6 +83,7 @@ public class PriceBasketTest {
 
         addItemInBasket("Apple", "Soup", "Soup", "Bread");
         assertEquals(new BigDecimal("2.60"), priceBasket.getTotal());
+        priceBasket.print();
     }
 
     @Test

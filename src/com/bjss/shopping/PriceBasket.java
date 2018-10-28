@@ -10,6 +10,10 @@ import java.util.List;
 
 public class PriceBasket {
 
+    private static final String SUBTOTAL = "Subtotal";
+    private static final String TOTAL = "Total";
+    private static final String NO_OFFERS = "(no offers available)";
+
     private List<? super Item> items;
 
     public List<? super Item> getItems() {
@@ -36,6 +40,16 @@ public class PriceBasket {
     public BigDecimal getTotal() {
 
         return new SpecialOffer(this).getTotalAfterOffers();
+    }
+
+    public void print() {
+        SpecialOffer specialOffer = new SpecialOffer(this);
+        BigDecimal totalAfterOffers = specialOffer.getTotalAfterOffers();
+        System.out.println(SUBTOTAL + ":" + " " + "£" + getSubTotal().toString());
+        for(String stmt : specialOffer.getOfferStatements()) {
+            System.out.println(stmt);
+        }
+        System.out.println(TOTAL+":"+" "+"£"+totalAfterOffers.toString());
     }
 
 }
