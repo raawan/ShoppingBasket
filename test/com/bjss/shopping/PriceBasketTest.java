@@ -1,6 +1,7 @@
 package com.bjss.shopping;
 
 
+import com.bjss.shopping.exception.NoSuchItemException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -83,7 +84,7 @@ public class PriceBasketTest {
     @Test
     public void GIVEN__1Apple__2Soup_1Bread__THEN_DiscountedTotal__2pound60p() {
 
-        addItemInBasket("Apple", "Soup", "Soup", "Bread");
+        addItemInBasket("Apple", "sOup", "Soup", "Bread");
         assertEquals(new BigDecimal("2.60"), priceBasket.getTotal());
         priceBasket.print();
     }
@@ -99,7 +100,7 @@ public class PriceBasketTest {
 
     @Test()
     public void GIVEN__invalidItem__THEN__Exception_throw() {
-        assertThrows(RuntimeException.class, () -> addItemInBasket("XXYYZ"));
+        assertThrows(NoSuchItemException.class, () -> addItemInBasket("XXYYZ"));
     }
 
 
