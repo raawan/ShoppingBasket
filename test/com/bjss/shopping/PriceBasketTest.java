@@ -40,6 +40,7 @@ public class PriceBasketTest {
 
         addItemInBasket("Bread", "Milk");
         assertEquals(new BigDecimal("2.10"), priceBasket.getSubTotal());
+        priceBasket.print();
     }
 
     @Test

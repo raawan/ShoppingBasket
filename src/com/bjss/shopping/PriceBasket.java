@@ -46,6 +46,9 @@ public class PriceBasket {
         SpecialOffer specialOffer = new SpecialOffer(this);
         BigDecimal totalAfterOffers = specialOffer.getTotalAfterOffers();
         System.out.println(SUBTOTAL + ":" + " " + "£" + getSubTotal().toString());
+        if(specialOffer.getOfferStatements().size()==0) {
+            System.out.println(NO_OFFERS);
+        }
         for(String stmt : specialOffer.getOfferStatements()) {
             System.out.println(stmt);
         }
