@@ -73,4 +73,54 @@ public class PriceBasketTest {
         priceBasket.addItem(addItem("Bread"));
         assertEquals(new BigDecimal("1.70"), priceBasket.getTotal());
     }
+
+    @Test
+    public void GIVEN__5Soups_2Bread__THEN__DiscountedTotal_4pound5p() {
+
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Bread"));
+        priceBasket.addItem(addItem("Bread"));
+
+        assertEquals(new BigDecimal("4.05"), priceBasket.getTotal());
+    }
+
+    @Test
+    public void GIVEN__5soups_1Bread__THEN__DiscountedTotal__3pounds65p(){
+
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Bread"));
+
+        assertEquals(new BigDecimal("3.65"), priceBasket.getTotal());
+    }
+
+    @Test
+    public void GIVEN__1Apple__2Soup_1Bread__THEN_DiscountedTotal__2pound60p() {
+
+        priceBasket.addItem(addItem("Apple"));
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Soup"));
+        priceBasket.addItem(addItem("Bread"));
+
+        assertEquals(new BigDecimal("2.60"), priceBasket.getTotal());
+    }
+
+    @Test
+    public void GIVE__1Apple_1Milk_1Bread__THEN__SubTotal_3pounds10__DiscountedTotal_3pounds() {
+
+        priceBasket.addItem(addItem("Apple"));
+        priceBasket.addItem(addItem("Milk"));
+        priceBasket.addItem(addItem("Bread"));
+
+        assertEquals(new BigDecimal("3.00"), priceBasket.getTotal());
+        assertEquals(new BigDecimal("3.10"), priceBasket.getSubTotal());
+
+    }
 }

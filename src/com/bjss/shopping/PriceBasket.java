@@ -40,16 +40,18 @@ public class PriceBasket {
                 .filter(item -> ((Item) item).getName().equalsIgnoreCase("Bread"))
                 .count();
 
+        BigDecimal totalBread = items.stream()
+                .filter(item -> ((Item) item).getName().equalsIgnoreCase("Bread"))
+                .map(item -> ((Item) item).getPrice())
+                .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
+
         BigDecimal discountedBreadPrice=new BigDecimal("0");
         if( countSoup >= 2 && countBread >= 1) {
             long totaldiscountToApply = countSoup/2;
-            BigDecimal totalBread = items.stream()
-                    .filter(item -> ((Item) item).getName().equalsIgnoreCase("Bread"))
-                    .map(item -> ((Item) item).getPrice())
-                    .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
-            discountedBreadPrice  = totalBread.divide(new BigDecimal(totaldiscountToApply*2));
-
-
+            totaldiscountToApply= totaldiscountToApply==1?2:totaldiscountToApply;
+            discountedBreadPrice  = totalBread.divide(new BigDecimal(totaldiscountToApply));
+        } else {
+            discountedBreadPrice = totalBread;
         }
 
         BigDecimal allTotalWithoutBreadAndApple = items.stream()
