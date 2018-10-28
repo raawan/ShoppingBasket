@@ -1,6 +1,7 @@
 package com.bjss.shopping;
 
 import com.bjss.shopping.goods.Item;
+import com.bjss.shopping.goods.ItemFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,6 +15,25 @@ public class PriceBasket {
     private static final String NO_OFFERS = "(no offers available)";
 
     private List<? super Item> items;
+
+
+    public static void main(String[] args) {
+        if(args.length==0 || args.length==1) {
+            System.out.println("Arguments Required");
+            System.out.println("Format: PriceBasket Apples Milk Bread");
+            return;
+        }
+        if(!args[0].equalsIgnoreCase("pricebasket")) {
+            System.out.println("First Argument is invalid");
+            System.out.println("Format: PriceBasket");
+            return;
+        }
+        PriceBasket priceBasket = new PriceBasket();
+        for(int i=1;i<args.length;i++) {
+            priceBasket.addItem(ItemFactory.addItem(args[i]));
+        }
+        priceBasket.print();
+    }
 
     public List<? super Item> getItems() {
         return items;
