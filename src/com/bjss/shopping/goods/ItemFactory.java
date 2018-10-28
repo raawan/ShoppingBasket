@@ -7,7 +7,7 @@ public class ItemFactory {
     /*
     Assuming the name of the items are unique
      */
-    public static Item createItem(String name) {
+    public static Item addItem(String name) {
         switch (name) {
             case "Apple" : return new Apple("Apple",new BigDecimal(0.65));
             case "Bread" : return new Bread("Bread",new BigDecimal(0.80));

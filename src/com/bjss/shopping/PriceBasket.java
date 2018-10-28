@@ -1,8 +1,19 @@
 package com.bjss.shopping;
 
+import com.bjss.shopping.goods.Item;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class PriceBasket {
 
-    public int returnVal() {
-        return 1;
+    List<? super Item> items;
+
+    public <T extends Item> void addItem(T item) {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+        items.add(item);
     }
+
 }
