@@ -25,7 +25,7 @@ public class SpecialOffer {
         this.basket = basket;
     }
 
-    public BigDecimal getTotalAfterOffers_2() {
+    public BigDecimal getTotalAfterOffers() {
         List<Discount> allDiscounts = WeeklyDiscounts.getAllDiscounts();
 
         List<Discount> itemsWithIndependentDiscount = allDiscounts.stream().filter(discount -> !discount.getDependentItem().isPresent()).collect(Collectors.toList());
@@ -40,19 +40,19 @@ public class SpecialOffer {
             sumOfDependentSpecialOffers = sumOfDependentSpecialOffers.add(applyDependentSpecialOffer(discount));
         }
 
-        BigDecimal allNonSPecialOfferItemTotalPrice = getTotalExcludingSpecialOfferItem_2(itemsWithIndependentDiscount,itemsWithDependentDiscount);
+        BigDecimal allNonSPecialOfferItemTotalPrice = getTotalExcludingSpecialOfferItem(itemsWithIndependentDiscount, itemsWithDependentDiscount);
 
         return allNonSPecialOfferItemTotalPrice.add(sumOfIndependentSpecialOffers).add(sumOfDependentSpecialOffers).setScale(2, RoundingMode.HALF_UP);
 
     }
 
-    private BigDecimal getTotalExcludingSpecialOfferItem_2( List<Discount> itemsWithIndependentDiscount, List<Discount> itemsWithDependentDiscount) {
+    private BigDecimal getTotalExcludingSpecialOfferItem(List<Discount> itemsWithIndependentDiscount, List<Discount> itemsWithDependentDiscount) {
         return basket.getItems().stream()
                 .filter(
-                        item -> !this.containInList(itemsWithIndependentDiscount,((Item) item))
+                        item -> !this.containInList(itemsWithIndependentDiscount, ((Item) item))
                 )
                 .filter(
-                        item -> !this.containInList(itemsWithDependentDiscount,((Item) item))
+                        item -> !this.containInList(itemsWithDependentDiscount, ((Item) item))
                 )
                 .map(item -> ((Item) item).getPrice())
                 .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
@@ -60,12 +60,16 @@ public class SpecialOffer {
 
     private boolean containInList(List<Discount> discountedItems, Item item) {
         List<Discount> items = discountedItems.stream().filter(discount -> discount.getDiscountItem().getName().equalsIgnoreCase(item.getName())).collect(Collectors.toList());
-        if(items.size()>0) {
+        if (items.size() > 0) {
             return true;
         }
         return false;
     }
 
+    /*
+    These are the offers of kind where a price of offer depends on the number of other objects bought
+    ex: on buying 2 soup , bread is 50 percent off
+     */
     private BigDecimal applyDependentSpecialOffer(Discount discount) {
         long countDependentItem = getItemCount(discount.getDependentItem().get().getName());
         long countItemToBeDiscounted = getItemCount(discount.getDiscountItem().getName());
@@ -81,7 +85,9 @@ public class SpecialOffer {
         return totalItemCost;
     }
 
-
+    /*
+    These are kind of offer where there is a reduction of price on buying the item
+     */
     private BigDecimal applyIndependentSpecialOffer(Discount discount) {
         BigDecimal discountedPrice = basket.getItems().stream()
                 .filter(item -> ((Item) item).getName().equalsIgnoreCase(discount.getDiscountItem().getName()))
@@ -93,55 +99,6 @@ public class SpecialOffer {
         }
 
         return discountedPrice;
-    }
-
-    /*
-    ==================================================================================================================================================
-     */
-    public BigDecimal getTotalAfterOffers() {
-
-        BigDecimal discountedApplePrice = applyAppleSpecialOffer();
-        BigDecimal discountedBreadPrice = applySoupAndBreadSpecialOffer();
-        BigDecimal allTotalWithoutBreadAndApple = getTotalExcludingSpecialOfferItem();
-        BigDecimal totalAfterDiscount = allTotalWithoutBreadAndApple
-                .add(discountedBreadPrice)
-                .add(discountedApplePrice);
-        return totalAfterDiscount.setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private BigDecimal applyAppleSpecialOffer() {
-        BigDecimal discountedPrice = basket.getItems().stream()
-                .filter(item -> ((Item) item).getName().equalsIgnoreCase("Apple"))
-                .map(item -> ((Item) item).getPrice().multiply(new BigDecimal(APPLE_DISCOUNT)))
-                .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
-
-        if (!(discountedPrice.compareTo(new BigDecimal("0")) == 0)) {
-            addOfferStatement(getItemTotal("Apple"), discountedPrice, "10", "Apple");
-        }
-
-        return discountedPrice;
-    }
-
-    private BigDecimal getTotalExcludingSpecialOfferItem() {
-        return basket.getItems().stream()
-                .filter(item -> !((Item) item).getName().equalsIgnoreCase("Bread"))
-                .filter(item -> !((Item) item).getName().equalsIgnoreCase("Apple"))
-                .map(item -> ((Item) item).getPrice())
-                .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
-    }
-
-    private BigDecimal applySoupAndBreadSpecialOffer() {
-        long countSoup = getItemCount("Soup");
-        long countBread = getItemCount("Bread");
-        BigDecimal totalBread = getItemTotal("Bread");
-        if (countSoup >= 2 && countBread >= 1) {
-            long totaldiscountToApply = countSoup / 2;
-            totaldiscountToApply = totaldiscountToApply == 1 ? 2 : totaldiscountToApply;
-            BigDecimal discountedBreadPrice = totalBread.divide(new BigDecimal(totaldiscountToApply));
-            addOfferStatement(totalBread, discountedBreadPrice, "50", "Bread");
-            return discountedBreadPrice;
-        }
-        return totalBread;
     }
 
     private void addOfferStatement(BigDecimal totalPrice, BigDecimal discountedPrice, String percentageOff, String itemName) {

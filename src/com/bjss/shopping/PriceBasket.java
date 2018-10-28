@@ -62,7 +62,7 @@ public class PriceBasket {
     public BigDecimal getTotal() {
 
         //return new SpecialOffer(this).getTotalAfterOffers();
-        return new SpecialOffer(this).getTotalAfterOffers_2();
+        return new SpecialOffer(this).getTotalAfterOffers();
     }
 
     public void print() {
