@@ -6,8 +6,6 @@ import java.util.Optional;
 
 public class Discount {
 
-
-
     private final Item discountItem;
     private int discountPercentage;
     private Optional<Item> dependentItem;

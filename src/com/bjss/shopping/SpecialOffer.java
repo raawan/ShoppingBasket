@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 public class SpecialOffer {
 
-    private static final String APPLE_DISCOUNT = "0.90";
     private final PriceBasket basket;
 
     private final List<String> offerStatements = new ArrayList<>();
@@ -72,7 +71,7 @@ public class SpecialOffer {
                         item -> !this.containInList(itemsWithDependentDiscount, ((Item) item))
                 )
                 .map(item -> ((Item) item).getPrice())
-                .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
+                .reduce(new BigDecimal("0"), BigDecimal::add);
     }
 
     private boolean containInList(List<Discount> discountedItems, Item item) {
@@ -109,7 +108,7 @@ public class SpecialOffer {
         BigDecimal discountedPrice = basket.getItems().stream()
                 .filter(item -> ((Item) item).getName().equalsIgnoreCase(discount.getDiscountItem().getName()))
                 .map(item -> ((Item) item).getPrice().multiply(new BigDecimal(discount.getDiscountPercentage()).multiply(new BigDecimal("0.01"))))
-                .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
+                .reduce(new BigDecimal("0"), BigDecimal::add);
 
         if (!(discountedPrice.compareTo(new BigDecimal("0")) == 0)) {
             addOfferStatement(getItemTotal(discount.getDiscountItem().getName()), discountedPrice, String.valueOf(100 - discount.getDiscountPercentage()), discount.getDiscountItem().getName());
@@ -121,7 +120,7 @@ public class SpecialOffer {
     private void addOfferStatement(BigDecimal totalPrice, BigDecimal discountedPrice, String percentageOff, String itemName) {
 
         BigDecimal totalDiscount = totalPrice.subtract(discountedPrice).setScale(2, RoundingMode.HALF_UP);
-        StringBuffer offerStatement = new StringBuffer(itemName).append(" " + percentageOff + "%").append(" off:-").append(totalDiscount.toString()).append(" p");
+        StringBuilder offerStatement = new StringBuilder(itemName).append(" " + percentageOff + "%").append(" off:-").append(totalDiscount.toString()).append(" p");
         offerStatements.add(offerStatement.toString());
     }
 
@@ -129,7 +128,7 @@ public class SpecialOffer {
         return basket.getItems().stream()
                 .filter(item -> ((Item) item).getName().equalsIgnoreCase(itemName))
                 .map(item -> ((Item) item).getPrice())
-                .reduce(new BigDecimal("0"), (price1, price2) -> price1.add(price2));
+                .reduce(new BigDecimal("0"), BigDecimal::add);
     }
 
     private long getItemCount(String itemName) {

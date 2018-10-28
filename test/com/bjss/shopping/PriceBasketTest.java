@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 import static com.bjss.shopping.goods.ItemFactory.addItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class PriceBasketTest {
