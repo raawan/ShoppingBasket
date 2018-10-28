@@ -16,10 +16,6 @@ public class PriceBasket {
 
     private List<? super Item> items;
 
-    public PriceBasket() {
-    }
-
-
     public static void main(String[] args) {
         if(args.length==0 || args.length==1) {
             System.out.println("Arguments Required");

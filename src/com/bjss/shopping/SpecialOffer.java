@@ -27,23 +27,40 @@ public class SpecialOffer {
 
     public BigDecimal getTotalAfterOffers() {
         List<Discount> allDiscounts = WeeklyDiscounts.getAllDiscounts();
+        List<Discount> itemsWithIndependentDiscount = allDiscounts.stream()
+                .filter(discount -> !discount.getDependentItem().isPresent())
+                .collect(Collectors.toList());
+        List<Discount> itemsWithDependentDiscount = allDiscounts.stream()
+                .filter(discount -> discount.getDependentItem().isPresent())
+                .collect(Collectors.toList());
 
-        List<Discount> itemsWithIndependentDiscount = allDiscounts.stream().filter(discount -> !discount.getDependentItem().isPresent()).collect(Collectors.toList());
+        BigDecimal sumOfIndependentSpecialOffers = getSumOfIndependentSpecialOfferItems(itemsWithIndependentDiscount);
+        BigDecimal sumOfDependentSpecialOffers = getSumOfDependentSpecialOfferItems(itemsWithDependentDiscount);
+        BigDecimal allNonSpecialOfferItemTotalPrice = getTotalExcludingSpecialOfferItem(itemsWithIndependentDiscount, itemsWithDependentDiscount);
+
+        return allNonSpecialOfferItemTotalPrice
+                .add(sumOfIndependentSpecialOffers)
+                .add(sumOfDependentSpecialOffers)
+                .setScale(2, RoundingMode.HALF_UP);
+
+    }
+
+    private BigDecimal getSumOfDependentSpecialOfferItems(List<Discount> itemsWithDependentDiscount) {
+
+        BigDecimal sumOfIndependentSpecialOffers = new BigDecimal("0");
+        for (Discount discount : itemsWithDependentDiscount) {
+            sumOfIndependentSpecialOffers = sumOfIndependentSpecialOffers.add(applyDependentSpecialOffer(discount));
+        }
+        return sumOfIndependentSpecialOffers;
+    }
+
+    private BigDecimal getSumOfIndependentSpecialOfferItems(List<Discount> itemsWithIndependentDiscount) {
+
         BigDecimal sumOfIndependentSpecialOffers = new BigDecimal("0");
         for (Discount discount : itemsWithIndependentDiscount) {
             sumOfIndependentSpecialOffers = sumOfIndependentSpecialOffers.add(applyIndependentSpecialOffer(discount));
         }
-
-        BigDecimal sumOfDependentSpecialOffers = new BigDecimal("0");
-        List<Discount> itemsWithDependentDiscount = allDiscounts.stream().filter(discount -> discount.getDependentItem().isPresent()).collect(Collectors.toList());
-        for (Discount discount : itemsWithDependentDiscount) {
-            sumOfDependentSpecialOffers = sumOfDependentSpecialOffers.add(applyDependentSpecialOffer(discount));
-        }
-
-        BigDecimal allNonSPecialOfferItemTotalPrice = getTotalExcludingSpecialOfferItem(itemsWithIndependentDiscount, itemsWithDependentDiscount);
-
-        return allNonSPecialOfferItemTotalPrice.add(sumOfIndependentSpecialOffers).add(sumOfDependentSpecialOffers).setScale(2, RoundingMode.HALF_UP);
-
+        return sumOfIndependentSpecialOffers;
     }
 
     private BigDecimal getTotalExcludingSpecialOfferItem(List<Discount> itemsWithIndependentDiscount, List<Discount> itemsWithDependentDiscount) {
