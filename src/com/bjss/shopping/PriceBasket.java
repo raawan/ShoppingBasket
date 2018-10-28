@@ -2,6 +2,7 @@ package com.bjss.shopping;
 
 import com.bjss.shopping.goods.Item;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,4 +17,7 @@ public class PriceBasket {
         items.add(item);
     }
 
+    public BigDecimal getTotal() {
+        return null;
+    }
 }
